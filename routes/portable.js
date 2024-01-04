@@ -82,7 +82,8 @@ router.put(
   authorize,
   upload.fields([{ name: 'infoImage' }]),
   async (req, res) => {
-    const { error } = validateRequest({ isEdit: true, ...req.body });
+    let portableData = extractRequestBody(req);
+    const { error } = validateRequest({ isEdit: true, ...portableData });
     if (error) return res.status(400).send(error.details[0].message);
 
     const portable = await Portable.findById(req.params.id);
@@ -114,7 +115,6 @@ router.put(
       }
     }
 
-    let portableData = extractRequestBody(req);
     if (images?.infoImage) portableData.infoImage = images.infoImage;
 
     const updatedPortable = await Portable.findByIdAndUpdate(

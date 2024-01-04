@@ -82,7 +82,8 @@ router.put(
   authorize,
   upload.fields([{ name: 'infoImage' }]),
   async (req, res) => {
-    const { error } = validateRequest({ isEdit: true, ...req.body });
+    let tubData = extractRequestBody(req);
+    const { error } = validateRequest({ isEdit: true, ...tubData });
     if (error) return res.status(400).send(error.details[0].message);
 
     const tub = await Tub.findById(req.params.id);
@@ -109,7 +110,6 @@ router.put(
       }
     }
 
-    let tubData = extractRequestBody(req);
     if (images?.infoImage) tubData.infoImage = images.infoImage;
 
     const updatedTub = await Tub.findByIdAndUpdate(tub._id, tubData, {

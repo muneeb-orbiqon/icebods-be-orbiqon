@@ -82,7 +82,8 @@ router.put(
   authorize,
   upload.fields([{ name: 'infoImage' }]),
   async (req, res) => {
-    const { error } = validateRequest({ isEdit: true, ...req.body });
+    let barrelData = extractRequestBody(req);
+    const { error } = validateRequest({ isEdit: true, ...barrelData });
     if (error) return res.status(400).send(error.details[0].message);
 
     const barrel = await Barrel.findById(req.params.id);
@@ -114,7 +115,6 @@ router.put(
       }
     }
 
-    let barrelData = extractRequestBody(req);
     if (images?.infoImage) barrelData.infoImage = images.infoImage;
 
     const updatedBarrel = await Barrel.findByIdAndUpdate(
